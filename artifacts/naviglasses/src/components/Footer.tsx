@@ -1,26 +1,26 @@
-
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-card py-12">
-      <div className="container mx-auto px-4 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-6">
-        <div>
-          <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
-            <div className="w-6 h-6 bg-primary rounded flex items-center justify-center text-primary-foreground font-bold text-xs">
+    <footer className="bg-background py-16 border-t border-border">
+      <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+        
+        <div className="flex flex-col items-center md:items-start gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-primary text-primary-foreground flex items-center justify-center font-bold text-xl">
               N
             </div>
-            <span className="font-bold text-lg tracking-tight">NaviGlasses</span>
+            <span className="font-bold text-2xl tracking-tight">NaviGlasses</span>
           </div>
-          <p className="text-sm text-muted-foreground">Visão que vai além dos olhos.</p>
+          <p className="text-muted-foreground">Visão que vai além dos olhos.</p>
         </div>
 
-        <div className="text-sm text-muted-foreground space-y-1">
+        <div className="flex flex-col items-center md:items-end gap-2 text-sm text-muted-foreground">
           <p>PIX para doações/compras:</p>
-          <p className="text-primary font-mono select-all">ChaolinMatadorDePorco@gmail.com</p>
+          <p className="text-primary font-mono select-all text-base">ChaolinMatadorDePorco@gmail.com</p>
+          <div className="mt-4 opacity-50">
+            &copy; {new Date().getFullYear()} NaviGlasses. Feito no Brasil.
+          </div>
         </div>
 
-        <div className="text-xs text-muted-foreground">
-          &copy; {new Date().getFullYear()} NaviGlasses. Feito em Xique-Xique, BA.
-        </div>
       </div>
     </footer>
   );

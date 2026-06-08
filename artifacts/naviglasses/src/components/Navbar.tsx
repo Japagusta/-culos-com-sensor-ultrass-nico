@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ShoppingCart, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -8,7 +8,7 @@ export function Navbar({ cart }: { cart: any }) {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      setIsScrolled(window.scrollY > 60);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -26,24 +26,24 @@ export function Navbar({ cart }: { cart: any }) {
 
   return (
     <header
-      className={`fixed top-0 w-full z-40 transition-all duration-300 ${
-        isScrolled ? 'bg-background/80 backdrop-blur-md border-b border-border/50' : 'bg-transparent'
+      className={`fixed top-0 w-full z-40 transition-all duration-500 ${
+        isScrolled ? 'bg-background/80 backdrop-blur-md border-b border-primary/20' : 'bg-transparent border-b border-transparent'
       }`}
     >
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.scrollTo(0,0)} data-testid="nav-logo">
-          <div className="w-8 h-8 bg-primary rounded flex items-center justify-center text-primary-foreground font-bold text-xl">
+      <div className="container mx-auto px-6 h-20 flex items-center justify-between">
+        <div className="flex items-center gap-3 cursor-pointer group" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} data-testid="nav-logo">
+          <div className="w-8 h-8 bg-primary text-primary-foreground flex items-center justify-center font-bold text-xl transition-transform group-hover:scale-105">
             N
           </div>
           <span className="font-bold text-xl tracking-tight">NaviGlasses</span>
         </div>
 
-        <nav className="hidden md:flex items-center gap-6">
-          {['Início', 'Sobre', 'Como Funciona', 'Tecnologia', 'Benefícios', 'Galeria', 'Preço'].map((item) => (
+        <nav className="hidden md:flex items-center gap-8">
+          {['Início', 'Sobre', 'Funciona', 'Tecnologia', 'Benefícios', 'Galeria', 'Preço'].map((item) => (
             <button
               key={item}
               onClick={() => scrollTo(item.toLowerCase().replace(' ', '-'))}
-              className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
             >
               {item}
             </button>
@@ -54,9 +54,9 @@ export function Navbar({ cart }: { cart: any }) {
           <button
             data-testid="nav-cart"
             onClick={() => cart.setIsOpen(true)}
-            className="relative p-2 text-foreground hover:text-primary transition-colors hover:scale-110 hover:shadow-[0_0_15px_rgba(0,212,232,0.5)] rounded-full"
+            className="relative p-2 text-foreground hover:text-primary transition-all duration-300 rounded-full hover:bg-primary/10"
           >
-            <ShoppingCart className="w-6 h-6" />
+            <ShoppingCart className="w-5 h-5" />
             <AnimatePresence>
               {totalItems > 0 && (
                 <motion.div
@@ -72,10 +72,10 @@ export function Navbar({ cart }: { cart: any }) {
           </button>
 
           <button
-            className="md:hidden p-2"
+            className="md:hidden p-2 text-foreground"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
-            {mobileMenuOpen ? <X /> : <Menu />}
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </div>
@@ -86,14 +86,14 @@ export function Navbar({ cart }: { cart: any }) {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="md:hidden bg-background border-b border-border overflow-hidden"
+            className="md:hidden bg-background/95 backdrop-blur-xl border-b border-border overflow-hidden"
           >
-            <div className="flex flex-col p-4 gap-4">
-              {['Início', 'Sobre', 'Como Funciona', 'Tecnologia', 'Benefícios', 'Galeria', 'Preço'].map((item) => (
+            <div className="flex flex-col p-6 gap-6">
+              {['Início', 'Sobre', 'Funciona', 'Tecnologia', 'Benefícios', 'Galeria', 'Preço'].map((item) => (
                 <button
                   key={item}
                   onClick={() => scrollTo(item.toLowerCase().replace(' ', '-'))}
-                  className="text-left text-foreground hover:text-primary"
+                  className="text-left text-lg font-medium text-foreground hover:text-primary transition-colors"
                 >
                   {item}
                 </button>

@@ -1,66 +1,113 @@
-import { motion } from 'framer-motion';
-import { Waves, Cpu, Vibrate, Route } from 'lucide-react';
+import { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { useIsMobile } from '../hooks/use-mobile';
+
+const steps = [
+  {
+    num: "01",
+    title: "Onda sonora emitida",
+    desc: "O sensor HC-SR04 dispara pulsos acústicos inaudíveis continuamente no ambiente.",
+    visual: (
+      <svg viewBox="0 0 100 100" className="w-full h-full text-primary">
+        <circle cx="50" cy="50" r="10" fill="currentColor" className="animate-ping" style={{ animationDuration: '2s' }} />
+        <circle cx="50" cy="50" r="25" fill="none" stroke="currentColor" strokeWidth="2" className="animate-ping" style={{ animationDuration: '2s', animationDelay: '0.5s' }} />
+        <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="1" className="animate-ping" style={{ animationDuration: '2s', animationDelay: '1s' }} />
+      </svg>
+    )
+  },
+  {
+    num: "02",
+    title: "Obstáculo detectado",
+    desc: "A onda bate no objeto e retorna ao sensor em uma fração de segundo.",
+    visual: (
+      <div className="w-full h-full flex items-center justify-center relative">
+        <div className="w-8 h-32 bg-border absolute right-1/4" />
+        <svg viewBox="0 0 100 100" className="w-1/2 h-1/2 text-primary absolute left-1/4">
+          <path d="M0,50 Q25,25 50,50 T100,50" fill="none" stroke="currentColor" strokeWidth="2" />
+        </svg>
+      </div>
+    )
+  },
+  {
+    num: "03",
+    title: "Alerta ativado",
+    desc: "O microcontrolador calcula a distância e aciona o motor vibratório na haste.",
+    visual: (
+      <div className="w-full h-full flex flex-col items-center justify-center gap-2">
+        <div className="w-16 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0s' }} />
+        <div className="w-24 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
+        <div className="w-16 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+      </div>
+    )
+  },
+  {
+    num: "04",
+    title: "Navegação segura",
+    desc: "O usuário percebe o obstáculo antes do contato e ajusta sua rota.",
+    visual: (
+      <div className="w-full h-full flex items-center justify-center">
+        <div className="w-32 h-32 rounded-full border-4 border-primary border-t-transparent animate-spin" style={{ animationDuration: '3s' }} />
+        <div className="absolute w-4 h-4 bg-primary rounded-full" />
+      </div>
+    )
+  }
+];
 
 export function HowItWorks() {
-  const steps = [
-    {
-      icon: <Waves className="w-8 h-8" />,
-      title: 'Detecção por Ultrassom',
-      desc: 'O sensor frontal varre o ambiente emitindo ondas sonoras inaudíveis.'
-    },
-    {
-      icon: <Cpu className="w-8 h-8" />,
-      title: 'Processamento',
-      desc: 'O M5Stick C Plus2 calcula a distância do obstáculo em tempo real.'
-    },
-    {
-      icon: <Vibrate className="w-8 h-8" />,
-      title: 'Alerta Vibratório',
-      desc: 'A intensidade da vibração aumenta conforme o objeto se aproxima.'
-    },
-    {
-      icon: <Route className="w-8 h-8" />,
-      title: 'Navegação Segura',
-      desc: 'O usuário ajusta a rota com autonomia e confiança.'
-    }
-  ];
+  const isMobile = useIsMobile();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: containerRef });
+  
+  const x = useTransform(scrollYProgress, [0, 1], ['0%', '-75%']);
+
+  if (isMobile) {
+    return (
+      <section className="py-24 bg-background">
+        <div className="container mx-auto px-6">
+          {steps.map((step, i) => (
+            <div key={i} className="mb-16 last:mb-0 border-l-2 border-primary/20 pl-6 relative">
+              <div className="absolute left-[-9px] top-0 w-4 h-4 bg-background border-2 border-primary rounded-full" />
+              <div className="text-primary font-mono font-bold mb-2">{step.num}</div>
+              <h3 className="text-2xl font-bold mb-4">{step.title}</h3>
+              <p className="text-muted-foreground mb-8">{step.desc}</p>
+              <div className="h-48 w-full bg-card/50 rounded-xl border border-white/5 flex items-center justify-center p-8">
+                {step.visual}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
 
   return (
-    <section id="como-funciona" className="py-24 relative overflow-hidden">
-      <div className="container mx-auto px-4">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Como Funciona</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">Um fluxo invisível de tecnologia que traduz o espaço físico em estímulos táteis.</p>
-        </motion.div>
-
-        <div className="relative max-w-5xl mx-auto">
-          {/* Connecting line */}
-          <div className="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-border/50 -translate-y-1/2 z-0" />
-          
-          <div className="grid md:grid-cols-4 gap-8 relative z-10">
-            {steps.map((step, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.15 }}
-                className="flex flex-col items-center text-center"
-              >
-                <div className="w-20 h-20 bg-card rounded-full border-2 border-primary/30 flex items-center justify-center text-primary mb-6 shadow-[0_0_15px_rgba(0,212,232,0.1)] relative">
-                  <div className="absolute inset-0 bg-primary/10 rounded-full animate-ping" style={{ animationDuration: '3s', animationDelay: `${idx * 0.5}s` }}/>
-                  {step.icon}
+    <section ref={containerRef} className="h-[500vh] bg-background relative">
+      <div className="sticky top-0 h-[100vh] overflow-hidden flex flex-col">
+        <motion.div style={{ x }} className="flex h-full w-[400vw]">
+          {steps.map((step, i) => (
+            <div key={i} className="w-[100vw] h-full flex items-center justify-center p-24">
+              <div className="w-full max-w-5xl flex gap-16">
+                <div className="w-1/2 flex flex-col justify-center">
+                  <div className="text-primary font-mono text-8xl font-black mb-6 opacity-50">{step.num}</div>
+                  <h2 className="text-5xl font-bold tracking-tight mb-6">{step.title}</h2>
+                  <p className="text-2xl text-muted-foreground leading-relaxed">{step.desc}</p>
                 </div>
-                <h3 className="text-lg font-bold mb-2">{step.title}</h3>
-                <p className="text-sm text-muted-foreground">{step.desc}</p>
-              </motion.div>
-            ))}
-          </div>
+                <div className="w-1/2 flex items-center justify-center">
+                  <div className="w-full aspect-square relative opacity-80 mix-blend-screen">
+                    {step.visual}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </motion.div>
+        
+        {/* Progress Bar */}
+        <div className="absolute bottom-0 left-0 w-full h-1 bg-border">
+          <motion.div 
+            className="h-full bg-primary origin-left"
+            style={{ scaleX: scrollYProgress }}
+          />
         </div>
       </div>
     </section>

@@ -1,6 +1,6 @@
-import React from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
+import { StickyFeatures } from './components/StickyFeatures';
 import { About } from './components/About';
 import { HowItWorks } from './components/HowItWorks';
 import { Technology } from './components/Technology';
@@ -20,6 +20,7 @@ function App() {
       <Navbar cart={cart} />
       <main className="flex-1">
         <Hero cart={cart} />
+        <StickyFeatures />
         <About />
         <HowItWorks />
         <Technology />

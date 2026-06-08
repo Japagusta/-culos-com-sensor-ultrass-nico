@@ -1,114 +1,126 @@
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { useEffect } from 'react';
+import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion';
 import { ArrowRight, Eye } from 'lucide-react';
-import { useRef } from 'react';
 
 export function Hero({ cart }: { cart: any }) {
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
-  const imgY = useTransform(scrollYProgress, [0, 1], ['0%', '18%']);
-  const imgScale = useTransform(scrollYProgress, [0, 1], [1, 1.06]);
-  const imgOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
-  const textY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
+  const { scrollYProgress } = useScroll();
+  const opacity = useTransform(scrollYProgress, [0, 0.18], [1, 0]);
+  const heroY = useTransform(scrollYProgress, [0, 0.25], ['0%', '12%']);
+
+  // Mouse parallax with motion values (no state)
+  const rawX = useMotionValue(0);
+  const rawY = useMotionValue(0);
+  const springX = useSpring(rawX, { stiffness: 50, damping: 20 });
+  const springY = useSpring(rawY, { stiffness: 50, damping: 20 });
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      rawX.set((e.clientX / window.innerWidth - 0.5) * 28);
+      rawY.set((e.clientY / window.innerHeight - 0.5) * 14);
+    };
+    window.addEventListener('mousemove', handler);
+    return () => window.removeEventListener('mousemove', handler);
+  }, [rawX, rawY]);
 
   return (
-    <section
-      ref={ref}
+    <motion.section
       id="início"
-      className="relative min-h-screen flex items-center overflow-hidden"
+      style={{ opacity, y: heroY }}
+      className="relative h-[100vh] w-full overflow-hidden flex items-center bg-background"
       data-testid="section-hero"
     >
-      {/* Deep background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[hsl(222,47%,4%)] via-background to-background z-0" />
+      {/* Radial ciano glow — right side */}
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_60%_80%_at_80%_50%,rgba(0,212,232,0.13),transparent)]" />
+      {/* Left-to-center dark fade */}
+      <div className="absolute inset-0 z-10 bg-gradient-to-r from-background via-background/85 to-transparent" />
+      {/* Top fade */}
+      <div className="absolute inset-0 z-10 bg-gradient-to-b from-background/60 via-transparent to-transparent" />
 
-      {/* Ciano glow orbs */}
-      <div className="absolute top-1/4 right-1/4 w-[600px] h-[600px] bg-primary/8 rounded-full blur-[140px] pointer-events-none z-0" />
-      <div className="absolute bottom-0 left-1/3 w-[400px] h-[300px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none z-0" />
-
-      {/* Product image — full right side, fills background */}
+      {/* Product image — mouse parallax */}
       <motion.div
-        style={{ y: imgY, scale: imgScale, opacity: imgOpacity }}
-        className="absolute inset-0 z-10 flex items-end justify-end md:items-center pointer-events-none"
+        style={{ x: springX, y: springY }}
+        className="absolute right-[-8%] md:right-[-4%] top-1/2 -translate-y-1/2 w-[90vw] md:w-[58vw] pointer-events-none z-10"
       >
-        <div className="relative w-full md:w-[65%] h-full flex items-end md:items-center justify-center md:justify-end">
-          {/* Gradient mask: left fade + bottom fade */}
-          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/50 to-transparent z-20 md:via-background/30" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-20" />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-transparent to-transparent z-20" />
-
-          <img
-            src="/ng-front.png"
-            alt="NaviGlasses produto"
-            className="w-[90%] md:w-[85%] max-w-[780px] object-contain drop-shadow-2xl select-none pr-0 md:pr-8"
-            draggable={false}
-          />
-
-          {/* Subtle ciano glow behind product */}
-          <div className="absolute inset-0 flex items-center justify-end pointer-events-none z-10">
-            <div className="w-[60%] h-[60%] bg-primary/12 rounded-full blur-[90px] mr-16" />
-          </div>
-        </div>
+        <img
+          src="/ng-front.png"
+          alt="NaviGlasses"
+          className="w-full h-auto object-contain select-none"
+          draggable={false}
+        />
       </motion.div>
 
-      {/* Foreground text content */}
-      <motion.div
-        style={{ y: textY }}
-        className="container mx-auto px-6 relative z-30"
-      >
-        <div className="max-w-[560px]">
+      {/* Text content */}
+      <div className="container relative z-20 mx-auto px-6 h-full flex items-center">
+        <div className="w-full md:w-[52%] flex flex-col justify-center">
+
           {/* Badge */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 mb-6"
+            transition={{ duration: 0.6 }}
+            className="inline-flex items-center gap-2 mb-8 w-fit"
           >
-            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            <span className="text-xs font-semibold tracking-widest uppercase">Protótipo de Lançamento</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+            <span className="text-[11px] font-bold tracking-[0.22em] text-primary uppercase">
+              Protótipo de Lançamento
+            </span>
           </motion.div>
 
-          {/* Headline */}
+          {/* Main headline */}
           <motion.h1
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 32 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-5xl md:text-6xl lg:text-[4.5rem] font-bold tracking-tight leading-[1.08] mb-6"
+            transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            className="font-black leading-[0.88] tracking-tighter mb-6"
+            style={{ fontSize: 'clamp(3.5rem, 8vw, 7.5rem)' }}
           >
-            NaviGlasses —{' '}
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary via-cyan-300 to-blue-400 mt-1">
-              Visão que vai
-            </span>
-            <span className="block">além dos olhos.</span>
+            NaviGlasses
           </motion.h1>
 
-          {/* Subheadline */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
+          {/* Sub-headline */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-base md:text-lg text-muted-foreground leading-relaxed mb-8 max-w-[440px]"
+            transition={{ duration: 0.9, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="font-bold tracking-tight leading-[1.05] mb-8"
+            style={{ fontSize: 'clamp(1.8rem, 4vw, 3.5rem)' }}
           >
-            Um óculos inteligente que detecta obstáculos e devolve autonomia real a pessoas com deficiência visual — feito com tecnologia acessível, nascido no Brasil.
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-cyan-300 to-primary/60">
+              Visão que vai
+            </span>
+            <br />
+            <span className="text-foreground">além dos olhos.</span>
+          </motion.div>
+
+          {/* Description */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            className="text-base md:text-lg text-muted-foreground max-w-[420px] mb-10 leading-relaxed"
+          >
+            Um wearable que detecta obstáculos e devolve autonomia a pessoas com deficiência visual — feito com tecnologia acessível, nascido no Brasil.
           </motion.p>
 
           {/* CTAs */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="flex flex-wrap gap-4"
+            transition={{ duration: 0.7, delay: 0.65 }}
+            className="flex flex-col sm:flex-row gap-3 mb-10"
           >
             <button
               data-testid="hero-add-cart"
               onClick={() => cart.addToCart()}
-              className="group bg-primary text-primary-foreground px-7 py-3.5 rounded-full font-bold text-sm flex items-center gap-2 hover:scale-105 hover:shadow-[0_0_28px_rgba(0,212,232,0.45)] transition-all duration-300"
+              className="group bg-primary text-primary-foreground px-7 py-3.5 text-sm font-bold flex items-center justify-center gap-2 hover:bg-primary/90 hover:scale-105 hover:shadow-[0_0_32px_rgba(0,212,232,0.4)] transition-all duration-300"
             >
               Adicionar ao Carrinho
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
             <button
               data-testid="hero-how-it-works"
-              onClick={() => document.getElementById('como-funciona')?.scrollIntoView({ behavior: 'smooth' })}
-              className="group border border-border/60 text-foreground/80 px-7 py-3.5 rounded-full font-semibold text-sm flex items-center gap-2 hover:border-primary/50 hover:text-primary transition-all duration-300 backdrop-blur-sm"
+              onClick={() => document.getElementById('funciona')?.scrollIntoView({ behavior: 'smooth' })}
+              className="border border-white/10 text-foreground/70 px-7 py-3.5 text-sm font-semibold flex items-center justify-center gap-2 hover:border-primary/40 hover:text-primary transition-all duration-300 backdrop-blur-sm"
             >
               <Eye className="w-4 h-4" />
               Como funciona
@@ -119,26 +131,34 @@ export function Hero({ cart }: { cart: any }) {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="mt-8 text-sm text-muted-foreground/60"
+            transition={{ duration: 0.8, delay: 0.85 }}
+            className="text-sm text-muted-foreground/50"
           >
             A partir de{' '}
-            <span className="text-primary font-bold text-base">R$ 550,00</span>
+            <span className="text-primary font-bold">R$ 550,00</span>
             {' '}· Frete para todo o Brasil
           </motion.p>
         </div>
-      </motion.div>
+      </div>
 
-      {/* Scroll indicator */}
+      {/* Scroll line indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.2, duration: 0.8 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2"
+        transition={{ delay: 1.6, duration: 1 }}
+        className="absolute bottom-8 left-8 z-20 flex flex-col items-center gap-2"
       >
-        <div className="w-px h-12 bg-gradient-to-b from-primary/50 to-transparent animate-pulse" />
-        <span className="text-xs text-muted-foreground/50 tracking-widest uppercase">Role</span>
+        <div className="w-px h-14 bg-gradient-to-b from-transparent via-primary/40 to-transparent overflow-hidden relative">
+          <motion.div
+            animate={{ y: ['-100%', '200%'] }}
+            transition={{ repeat: Infinity, duration: 1.8, ease: 'linear' }}
+            className="absolute w-full h-1/2 bg-primary"
+          />
+        </div>
+        <span className="text-[10px] tracking-[0.2em] text-muted-foreground/40 uppercase rotate-90 origin-center mt-2">
+          Role
+        </span>
       </motion.div>
-    </section>
+    </motion.section>
   );
 }

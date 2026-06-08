@@ -1,41 +1,71 @@
 import { motion } from 'framer-motion';
 
+const tech = [
+  {
+    num: "01",
+    title: "M5Stick C Plus2",
+    desc: "O cérebro do sistema. Um microcontrolador ESP32 ultra-compacto com Bluetooth, Wi-Fi e bateria integrada que garante processamento veloz sem comprometer o peso."
+  },
+  {
+    num: "02",
+    title: "Sensor HC-SR04",
+    desc: "Módulo ultrassônico preciso que mapeia a distância de objetos refletindo ondas sonoras, oferecendo leitura confiável do ambiente frontal."
+  },
+  {
+    num: "03",
+    title: "Design Paramétrico 3D",
+    desc: "Carcaça modelada e impressa em 3D, garantindo leveza extrema, resistência mecânica e facilidade de reparo com baixo custo de produção."
+  },
+  {
+    num: "04",
+    title: "Alcance de 4 Metros",
+    desc: "O sensor cobre uma área cônica frontal de até 4 metros, permitindo tempo de reação seguro para desviar de obstáculos antes do contato."
+  }
+];
+
 export function Technology() {
-  const tech = [
-    { title: 'M5Stick C Plus2', desc: 'O cérebro do sistema. Um microcontrolador ESP32 ultra-compacto com Bluetooth, Wi-Fi e bateria integrada.' },
-    { title: 'Sensor HC-SR04', desc: 'Módulo ultrassônico preciso que mapeia a distância de objetos refletindo ondas sonoras com precisão milimétrica.' },
-    { title: 'Design Paramétrico 3D', desc: 'A carcaça é impressa em 3D, garantindo leveza extrema, resistência mecânica e facilidade de reparo.' },
-    { title: 'Alcance de 4 Metros', desc: 'O sensor cobre uma área cônica frontal de até 4 metros, permitindo tempo de reação seguro ao caminhar.' }
-  ];
-
   return (
-    <section id="tecnologia" className="py-24 bg-card">
-      <div className="container mx-auto px-4">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Engenharia de Precisão</h2>
-        </motion.div>
+    <section id="tecnologia" className="bg-[#050914] bg-[radial-gradient(hsl(186,100%,42%,0.05)_1px,transparent_1px)] [background-size:24px_24px] relative">
+      <div className="container mx-auto px-6 py-32 flex flex-col md:flex-row gap-16">
+        
+        {/* Sticky Left Column */}
+        <div className="w-full md:w-1/3 md:sticky md:top-32 md:h-[calc(100vh-8rem)] flex flex-col">
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-8">Engenharia de Precisão</h2>
+          <div className="flex-1 w-full relative min-h-[300px]">
+            <img 
+              src="/ng-closeup.png" 
+              alt="NaviGlasses Closeup" 
+              className="absolute inset-0 w-full h-full object-contain object-left-top drop-shadow-2xl opacity-80"
+              draggable={false}
+            />
+          </div>
+        </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {tech.map((item, idx) => (
+        {/* Scrolling Right Column */}
+        <div className="w-full md:w-2/3 flex flex-col pt-16 md:pt-32 pb-32">
+          {tech.map((item, i) => (
             <motion.div
-              key={idx}
-              initial={{ opacity: 0, y: 20 }}
+              key={i}
+              initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.1 }}
-              whileHover={{ y: -5, scale: 1.02 }}
-              className="bg-background p-6 rounded-2xl border border-border/50 hover:border-primary/50 hover:shadow-[0_0_20px_rgba(0,212,232,0.15)] transition-all duration-300"
+              viewport={{ once: true, margin: "-10%" }}
+              transition={{ duration: 0.6 }}
+              className="group relative pb-12 mb-12 border-b border-white/10 hover:border-primary/50 transition-colors duration-500"
             >
-              <h3 className="text-xl font-bold text-foreground mb-3">{item.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+              <div className="text-primary/50 font-mono text-sm mb-4">//{item.num}</div>
+              <h3 className="text-3xl md:text-4xl font-bold mb-6 group-hover:text-primary transition-colors duration-300">
+                {item.title}
+              </h3>
+              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl">
+                {item.desc}
+              </p>
+              
+              {/* Bottom glow line on hover */}
+              <div className="absolute bottom-[-1px] left-0 w-0 h-[1px] bg-primary group-hover:w-full transition-all duration-700 ease-out" />
             </motion.div>
           ))}
         </div>
+
       </div>
     </section>
   );
