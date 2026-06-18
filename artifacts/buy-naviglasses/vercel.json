@@ -1,13 +1,6 @@
 {
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
-  ],
-  "headers": [
-    {
-      "source": "/images/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=86400" }
-      ]
-    }
-  ]
+  "buildCommand": null,
+  "installCommand": null,
+  "outputDirectory": ".",
+  "framework": null
 }
