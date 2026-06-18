@@ -1,0 +1,25 @@
+kind = "web"
+previewPath = "/buy-naviglasses"
+title = "Comprar NaviGlasses"
+version = "1.0.0"
+id = "artifacts/buy-naviglasses"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/buy-naviglasses" ]
+localPort = 20946
+
+[services.development]
+run = "pnpm --filter @workspace/buy-naviglasses run dev"
+
+[services.production]
+serve = "static"
+publicDir = "artifacts/buy-naviglasses"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "20946"
